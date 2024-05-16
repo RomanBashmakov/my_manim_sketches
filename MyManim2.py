@@ -8,7 +8,14 @@ os.mkdir('media')
 
 class ToyExample(Scene):
     def construct(self):
-        circles = VGroup(*[Circle(radius=0.2, color=BLUE) for _ in range(10)])
-        circles.arrange_in_grid(buff=0.2)
-        self.play(Create(circles))
+        # name = Tex(r"Роман", font="Noto Sans")
+
+        myTemplate = TexTemplate()
+        myTemplate.add_to_preamble(r"\usepackage{mathrsfs}")
+        tex = Tex(
+            r"$\mathscr{R} \rightarrow \mathbb{R}$оман",
+            tex_template=myTemplate,
+            font_size=144,
+        )
+        self.play(Create(tex))
         self.wait(2)
