@@ -32,6 +32,7 @@ class ToyExample(Scene):
 class Zadacha_Ot_Aruta(Scene):
     def construct(self):
 
+        # Задача от инвестора Арута
         text_Task = Text("Задача", font_size=80)
         text_Arut = Text("от инвестора Арута", font_size=80)
         for letter in text_Arut:
@@ -41,6 +42,7 @@ class Zadacha_Ot_Aruta(Scene):
         self.play(gTaskArut.animate(run_time=1, lag_ratio=0.1).shift(UP * 5))
         self.wait(0.5)
 
+        # Условия задачи
         text_Bylo = Text('Было a = 100$',t2c={'a = 100':DARK_BLUE}, font_size=96)
         text_Stalo = Text('Стало A = 5000$',t2c={'A = 5000':RED}, font_size=96)
         text_Vremya = Text('За время T = 20 месяцев',t2c={'20 месяцев':DARK_BROWN}, font_size=96)
@@ -63,6 +65,7 @@ class Zadacha_Ot_Aruta(Scene):
         self.remove(framebox3)
         self.wait(0.2)
 
+        # Вопрос задачи
         text_Question = Text("Вопрос:", font_size=80)
         self.play(ReplacementTransform(g, text_Question))
         self.wait(0.2)
@@ -72,29 +75,31 @@ class Zadacha_Ot_Aruta(Scene):
         self.play(ReplacementTransform(text_Question, text_Question2))
         self.wait(0.2)
         framebox4 = SurroundingRectangle(text_Question2, buff = .1)
-        self.play(Create(framebox4))
-        self.wait(0.2)
-        self.remove(framebox4)
+        self.play(FadeOut(framebox4))
         self.wait(0.2)
 
-        text_Question3_1 = Text("Помогите")
-        text_Question3_1_1 = Text("инвестору Аруту")
-        for letter in text_Question3_1_1:
-            letter.set_color(random_bright_color())
-        text_Question3_2 = Text("найти доходность")
+        text_Question3_2 = Text("Доходность")
         text_Question3_3 = Text("его портфеля")
         text_Question3_4 = Text("?", font_size=96)
+        group_text_Question3 = VGroup(text_Question3_2, text_Question3_3, text_Question3_4).arrange(direction = DOWN)
 
-        group_text_Question3 = VGroup(text_Question3_1, text_Question3_1_1, text_Question3_2, text_Question3_3, text_Question3_4).arrange(direction = DOWN)
-        # group_text_Question3 = VGroup(text_Question3_1, text_Question3_2, text_Question3_3)
-
-        # paragraph_Question3 = Paragraph(
-        #     "Помогите",
-        #     "Аруту",
-        #     alignment="center",  # Выравнивание по центру
-        #     font_size=80,
-        # )
         self.play(Write(group_text_Question3))
+        self.wait(0.2)
+
+        framebox5 = SurroundingRectangle(text_Question3_2, buff = .1)
+
+        self.play(Write(framebox5))
+        self.wait(0.2)
+        self.play(FadeOut(framebox5))
+        self.wait(0.2)
+        self.play(FadeOut(text_Question2))
+        self.wait(0.2)
+
+        # Вопрос на весь экран
+        text_quastion_mark = Text("?", font_size=280)
+        self.play(ReplacementTransform(group_text_Question3, text_quastion_mark))
+        self.wait(0.2)
+        self.play(FadeOut(text_quastion_mark))
         self.wait(0.2)
 
 class Zadacha_Ot_Aruta_Solving(Scene):
