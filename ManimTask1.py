@@ -18,7 +18,6 @@ class ToyExample(Scene):
         self.play(Create(name)) 
         self.wait(2)
 
-
         # text_Task = Text("Задача от ", font_size=96)
         # # self.add(text_Task)
 
@@ -43,9 +42,9 @@ class Zadacha_Ot_Aruta(Scene):
         self.wait(0.5)
 
         # Условия задачи
-        text_Bylo = Text('Было a = 100$',t2c={'a = 100':DARK_BLUE}, font_size=96)
-        text_Stalo = Text('Стало A = 5000$',t2c={'A = 5000':RED}, font_size=96)
-        text_Vremya = Text('За время T = 20 месяцев',t2c={'20 месяцев':DARK_BROWN}, font_size=96)
+        text_Bylo = Text('Было a = 2000$',t2c={'a = 2000':DARK_BLUE}, font_size=96)
+        text_Stalo = Text('Стало A = 40000$',t2c={'A = 40000':RED}, font_size=96)
+        text_Vremya = Text('За n = 20 месяцев',t2c={'n = 20':DARK_BROWN}, font_size=96)
         g = VGroup(text_Bylo, text_Stalo, text_Vremya).scale(0.5).arrange(direction = DOWN, aligned_edge = LEFT).next_to(gTaskArut,DOWN * 5).shift(LEFT * 2)
 
         self.play(Create(g))
@@ -105,4 +104,117 @@ class Zadacha_Ot_Aruta(Scene):
 class Zadacha_Ot_Aruta_Solving(Scene):
     def construct(self):
 
+        text_Formula_1 = Text("Формула", font_size = 150)
+        text_Formula_2 = Text("Cложныe", font_size = 230) 
+        text_Formula_2_1 = Text("проценты", font_size = 230) 
+        group_text_Formula = VGroup(text_Formula_2, text_Formula_2_1).arrange(direction = DOWN)
+
+        self.play(Create(group_text_Formula))
+        self.wait(0.2)
+
+        self.play(group_text_Formula.animate.shift(UP * 5))
+        self.wait(0.2)
+
+        matex_1 = MathTex(
+            r"A = a(1+p)^{n}",
+            substrings_to_isolate="p",
+            font_size = 200
+        )
+
+        matex_1_1 = MathTex(
+            r"A = a(1+p)^{n}",
+            substrings_to_isolate="p",
+            font_size = 200
+        )
+        matex_1_1.set_color_by_tex("p", YELLOW)
+
+        self.play(Create(matex_1))
+        
+        self.wait(0.2)
+
+        self.play(ReplacementTransform(matex_1, matex_1_1)) #TransformFromCopy
+        self.wait(0.2)
+
+        self.play(matex_1_1[1].animate.shift(UP))
+        self.wait(0.2)
+        self.play(matex_1_1[1].animate.shift(DOWN))
+
+        matex_2 = MathTex(
+            r"p = \left( \frac{A}{a} \right)^{\frac{1}{n}} - 1",
+            substrings_to_isolate="p",
+            font_size = 200
+        ).move_to(DOWN * 4).set_color_by_tex("p", YELLOW)
+
+        self.play(ReplacementTransform(matex_1_1[1], matex_2))
+
+        matex_2_2 = MathTex(
+            r"p = \left( \frac{A}{a} \right)^{\frac{1}{n}} - 1",
+            substrings_to_isolate=["p"],
+            font_size = 200
+        ).move_to(DOWN * 4).set_color_by_tex("p", YELLOW)
+
+        self.play(ReplacementTransform(matex_2, matex_2_2))
+        self.wait(0.2)
+
+        self.play(FadeOut(matex_1_1, group_text_Formula))
+        self.wait(0.2)
+
+        self.play(matex_2_2.animate.shift(UP * 8))
+        self.wait(0.2)
+
+        matex_2_2.set_color_by_tex("p", WHITE)
+        
+        text_Bylo = Text('a = 2000$',t2c={'a':DARK_BLUE}, font_size = 250)
+        text_Stalo = Text('A = 40000$',t2c={'A':RED}, font_size = 250)
+        text_Vremya = Text('n = 20 месяцев',t2c={'n':DARK_BROWN}, font_size = 250)
+        g = VGroup(text_Bylo, text_Stalo, text_Vremya).scale(0.5).arrange(direction = DOWN).next_to(matex_2_2,DOWN * 5)#.arrange(direction = DOWN, aligned_edge = LEFT).shift(LEFT * 2)
+
+        self.play(Create(g))
+        self.wait(0.2)
+
+        matex_2_3 = MathTex(
+            r"p = \left( \frac{A}{a} \right)^{\frac{1}{n}} - 1",
+            font_size = 200
+        ).move_to(matex_2_2.get_center())
+        # self.add(index_labels(matex_2_3[0]))
+        matex_2_3[0][5].set_color(DARK_BLUE)
+
+        self.remove(matex_2_2)
+        self.add(matex_2_3)
+        self.wait(0.5)
+
+        matex_2_3[0][3].set_color(RED)
+        self.wait(0.5)
+
+        matex_2_3[0][9].set_color(DARK_BROWN)
+        self.wait(0.5)
+
+        self.play(FadeOut(g))
+        self.wait(0.2)
+
+        matex_3 = Tex(
+            r"$p \approx 16\frac{\%}{\text{месяц}}$",
+            font_size = 200
+        )
+
+        self.play(ReplacementTransform(matex_2_3, matex_3))
+        self.wait(0.2)
+
+        self.play(matex_3.animate.shift(UP * 2))
+        self.wait(0.2)
+
+        matex_4 = Tex(
+            # r"$p \approx 600\%/\text{год}$",
+            r"$p \approx 600 \frac{\%}{\text{год}}$",
+            
+            font_size = 200
+        ).next_to(matex_3, DOWN * 4)
+
+        self.play(Create(matex_4))
+        self.wait(0.2)
+
+        # Вопрос на весь экран
+        text_quastion_mark = Text("?", font_size=580)
+        self.play(FadeOut(matex_3))
+        self.play(ReplacementTransform(matex_4, text_quastion_mark))
         self.wait(0.2)
