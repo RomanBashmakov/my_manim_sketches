@@ -1,3 +1,5 @@
+# self.add(index_labels(matex_2_3[0]))
+
 import os
 import shutil
 from manim import *
@@ -6,6 +8,16 @@ from manim import *
 # os.mkdir('media')
 shutil.rmtree(os.path.join('media'))
 os.mkdir('media')
+
+class TransformFromCopyAnimationEffect(Scene):
+  def construct(self):
+        circle=Circle()      
+        self.play(Create(circle))
+        self.wait()
+
+        square = Square()
+        self.play(TransformFromCopy(circle, square), run_time=2)
+        self.wait()
 
 class Help1(Scene):
     def construct(self):
@@ -41,73 +53,40 @@ class MotivationMem(MovingCameraScene):
             font_size = 200
         )
 
-        # self.play(Create(math_mem_0_0))
-        # self.wait(0.2)
-
-        # self.play(math_mem_0.animate.shift(UP * 4))
-        # self.wait(0.2)
-
-        # Исходное выражение 2
-        # math_mem_1 = MathTex(
-        #     r" 1.01^{365} \approx 38",
-        #     font_size = 200
-        # )#.next_to(math_mem_0, DOWN * 4)
-        self.add(index_labels(math_mem_0[0]))
-        # self.wait(0.2)
-
-        # self.play(Create(math_mem_1))
-        # self.wait(0.2)
-
-        # g = VGroup(math_mem_0, math_mem_1).arrange(direction = DOWN)
-        # self.play(Create(g))
-        # self.wait(0.2)
-
         self.play(math_mem_0.animate.shift(UP * 6))
         self.wait(0.2)
-        # self.add(index_labels(math_mem_1[0]))
-        # self.wait(0.2)
 
         # 365 в рамку
+        self.add(index_labels(math_mem_0[0]))
         surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][0:12], color = YELLOW, buff = 0.15)
         self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
         self.wait(0.2)
-
-        # surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][16:19], color = YELLOW, buff = 0.15)
-        # self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
-        # self.wait(0.2)
 
         # оставить только одно уравнение
             # сдвинуть к центру
         self.play(FadeOut(math_mem_0[1]))
         self.remove(math_mem_0[1])
+
         self.wait(0.2)
 
-        self.play(math_mem_0.animate.shift(DOWN * 4))
+        # добавить единицу
+        math_mem_3 = MathTex(
+            r" 1 \times 0.99^{365} &\approx 0.03 \\",
+            r" 1.01^{365} &\approx 38",
+            font_size = 200
+        )
+        math_mem_3[0][0:2].set_color(YELLOW)
+        math_mem_3[0].move_to(math_mem_0[0])
 
-        # math_mem_0_0.move_to(math_mem_0.get_center())
-        # # self.play(ReplacementTransform(math_mem_0, math_mem_0_0))
-        # self.remove(math_mem_0)
-        # self.play(FadeIn(math_mem_0_0))
+        self.play(self.camera.frame.animate.move_to(math_mem_0[0]).set(width=math_mem_0_0.width*1.5))
+        self.wait(0.3)
 
-        # math_mem_0_0.move_to(DOWN * 4)
-        # self.play(ReplacementTransform(math_mem_0, math_mem_0_0))
-        # self.wait(0.2)
+        # 365 в рамку
+        surraundingRectangle = SurroundingRectangle(mobject = math_mem_3[0][5:7], color = YELLOW, buff = 0.1)
+        self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
+        self.wait(0.2)
 
-        # # self.play(math_mem_0_0.animate.shift(DOWN * 6))
-        # # self.wait(0.2)
-
-        # self.play(self.camera.frame.animate.move_to(math_mem_0_0).set(width=math_mem_0_0.width*1.5))
-        # self.wait(0.3)
-
-        # # добавить единицу
-        # math_mem_3 = MathTex(
-        #     r" 1 \times 0.99^{365} \approx 0.03",
-        #     font_size = 200
-        # ).move_to(math_mem_0_0.get_center())
-        # math_mem_3[0][0:2].set_color(YELLOW)
-
-        # # self.play(FadeOut(math_mem_0))
-        # # self.play(FadeIn(math_mem_3))
+        self.play(ReplacementTransform(math_mem_0[0], math_mem_3[0]))
 
         # self.play(ReplacementTransform(math_mem_0_0, math_mem_3))
         # self.wait(0.2)
@@ -118,21 +97,21 @@ class MotivationMem(MovingCameraScene):
         # # self.wait(0.2)
 
         # Стрелка
-        a = Arrow([-2, -1, 0], [-6, 2, 0])
+        a = Arrow([-2, 3, 0], [-6, 6, 0])
         self.play(Create(a), run_time=0.5)
         self.wait(0.2)
 
         # Ты сегодня
-        text_you = Text("Ты сегодня", font_size = 200, font = "Bradley Hand").move_to(DOWN * 2)
+        text_you = Text("Ты сегодня", font_size = 200, font = "Bradley Hand").move_to(UP * 2)
         self.play(Create(text_you), run_time=0.5)
         self.wait(0.2)
 
-        # Умножить на ОТ
+        # "1 *" в рамку
+        framebox_1 = SurroundingRectangle(mobject = math_mem_3[0][0:2], color = YELLOW, buff = 0.15)
+        self.play(ShowCreationThenFadeOut(framebox_1), run_time = 2)
+        self.wait(0.2)
 
-        # # "1 *" в рамку
-        # framebox_1 = SurroundingRectangle(mobject = math_mem_3[0][0:2], color = YELLOW, buff = 0.15)
-        # self.play(ShowCreationThenFadeOut(framebox_1), run_time = 2)
-        # self.wait(0.2)
+        # Умножить на ОТ
 
     
 
