@@ -86,11 +86,11 @@ class MotivationMem(MovingCameraScene):
         self.wait(0.2)
 
         # Стрелка на 365
-        a = Arrow(text_365.get_bottom(), math_mem_0[0][4:7].get_top())
-        self.play(Create(a), run_time=0.5)
+        a_365 = Arrow(text_365.get_bottom(), math_mem_0[0][4:7].get_top())
+        self.play(Create(a_365), run_time=0.5)
         self.wait(0.2)
 
-        self.play(FadeOut(a, text_365))
+        self.play(FadeOut(a_365, text_365))
         self.wait(0.2)
 
         # добавить единицу
@@ -118,8 +118,8 @@ class MotivationMem(MovingCameraScene):
         self.wait(0.2)
 
         # Стрелка
-        a = Arrow(text_you.get_center() + UL * 1, math_mem_3[0][0:2].get_center() + DR * 1)
-        self.play(Create(a), run_time=0.5)
+        a_1 = Arrow(text_you.get_center() + UL * 1, math_mem_3[0][0:2].get_center() + DR * 1)
+        self.play(Create(a_1), run_time=0.5)
         self.wait(0.2)
 
         # "1 *" в рамку
@@ -127,11 +127,78 @@ class MotivationMem(MovingCameraScene):
         self.play(ShowCreationThenFadeOut(framebox_1), run_time = 2)
         self.wait(0.2)
 
+        self.play(FadeOut(a_1, text_you))
+
+        g = VGroup().scale(0.5).arrange(direction = RIGHT).next_to(math_mem_3,UP * 5).arrange(direction = RIGHT)
+        for i in range(1, 3):
+            g += MathTex(
+                r" \times 0.99",
+                font_size = 100
+            )
+        self.wait(0.2)
+
         # Умножить на ОТ
 
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ============================================================================
 
+class My_test(MovingCameraScene):
+    def construct(self):
+        g_max = 6
+        g_counter = 0
+
+        # Формирование
+        g = VGroup().scale(0.5)
+        for i in range(0, g_max - 2):
+            if i == 0:
+                g.add( MathTex(r"0.99",font_size = 200))
+            else:
+                g.add( MathTex(r" \times 0.99",font_size = 200))
+                
+            g_counter += 1
+            # if i == 0:
+            #     g.add( MathTex(r"1",font_size = 200))
+            # else:
+            #     g.add( MathTex(r" \times 0.99",font_size = 200))
+            #     g_counter += 1
+
+        g.add( MathTex(r" \quad \cdots \quad", font_size = 200))
+        g_counter += 1
+
+        g.add( MathTex(r" \times 0.99",font_size = 200))
+        g_counter += 1
+
+        g.arrange(RIGHT, buff = 1)
+
+        # Вывод
+        for i in range(0, g_max - 2):
+            self.play(self.camera.frame.animate.move_to(g[i]).set(width=g[1].width*1.5))
+            self.play(Create(g[i]))
+
+            self.add(Integer(number = i + 1).set_color(ORANGE).scale(2.5).next_to(g[i], UP*2))
+            self.wait(0.1)
+
+            g_counter -= 1
+
+            # if i != 0:
+            #     self.add(Integer(number = i).set_color(ORANGE).scale(2.5).next_to(g[i], UP*2))
+            #     self.wait(0.1)
+
+            #     g_counter -= 1
+            #     print(g_counter)
+
+        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width*1.5))
+        self.play(Create(g[g_max - g_counter]))
+        self.wait(0.1)
+
+        g_counter -= 1
+
+        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width*1.5))
+        self.play(Create(g[g_max - g_counter]))
+        self.add(Integer(365).set_color(ORANGE).scale(2.5).next_to(g[g_max - g_counter], UP*2))
+        self.wait(0.1)
+
+        g_counter -= 1
 
 
 class ToyExample(Scene):
