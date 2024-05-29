@@ -35,12 +35,14 @@ class Help1(Scene):
         self.play(ReplacementTransform(f1[1],f2[1]))
         self.wait()
 
+# ============================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 class MotivationMem(MovingCameraScene):
     def construct(self):
         # Исходные выражения
         math_mem_0 = MathTex(
-            r" 0.99^{365} &\approx 0.03 \\",
-            r" 1.01^{365} &\approx 38",
+            r" 0.99^{365}&\approx 0.03 \\",
+            r" 1.01^{365}&\approx 38",
             font_size = 200
         )
 
@@ -57,7 +59,7 @@ class MotivationMem(MovingCameraScene):
         self.wait(0.2)
 
         # 365 в рамку
-        self.add(index_labels(math_mem_0[0]))
+        # self.add(index_labels(math_mem_0[0]))
         surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][0:12], color = YELLOW, buff = 0.15)
         self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
         self.wait(0.2)
@@ -69,22 +71,36 @@ class MotivationMem(MovingCameraScene):
 
         self.wait(0.2)
 
+        self.play(self.camera.frame.animate.move_to(math_mem_0[0]).set(width=math_mem_0_0.width*1.5))
+        self.wait(0.3)
+
+        # 365 в рамку
+        math_mem_0[0][4:7].set_color(YELLOW)
+        surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][4:7], color = YELLOW, buff = 0.1)
+        self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
+        self.wait(0.2)
+
+        # Год
+        text_365 = Text("Год", font_size = 200, font = "Bradley Hand").next_to(math_mem_0[0][4:7], UP * 8)
+        self.play(Create(text_365), run_time=0.5)
+        self.wait(0.2)
+
+        # Стрелка на 365
+        a = Arrow(text_365.get_bottom(), math_mem_0[0][4:7].get_top())
+        self.play(Create(a), run_time=0.5)
+        self.wait(0.2)
+
+        self.play(FadeOut(a, text_365))
+        self.wait(0.2)
+
         # добавить единицу
         math_mem_3 = MathTex(
-            r" 1 \times 0.99^{365} &\approx 0.03 \\",
+            r" 1 \times 0.99^{365}&\approx0.03 \\",
             r" 1.01^{365} &\approx 38",
             font_size = 200
         )
         math_mem_3[0][0:2].set_color(YELLOW)
         math_mem_3[0].move_to(math_mem_0[0])
-
-        self.play(self.camera.frame.animate.move_to(math_mem_0[0]).set(width=math_mem_0_0.width*1.5))
-        self.wait(0.3)
-
-        # 365 в рамку
-        surraundingRectangle = SurroundingRectangle(mobject = math_mem_3[0][5:7], color = YELLOW, buff = 0.1)
-        self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
-        self.wait(0.2)
 
         self.play(ReplacementTransform(math_mem_0[0], math_mem_3[0]))
 
@@ -96,14 +112,14 @@ class MotivationMem(MovingCameraScene):
         # # self.play(GrowArrow(arrows[0]))
         # # self.wait(0.2)
 
-        # Стрелка
-        a = Arrow([-2, 3, 0], [-6, 6, 0])
-        self.play(Create(a), run_time=0.5)
-        self.wait(0.2)
-
         # Ты сегодня
         text_you = Text("Ты сегодня", font_size = 200, font = "Bradley Hand").move_to(UP * 2)
         self.play(Create(text_you), run_time=0.5)
+        self.wait(0.2)
+
+        # Стрелка
+        a = Arrow(text_you.get_center() + UL * 1, math_mem_3[0][0:2].get_center() + DR * 1)
+        self.play(Create(a), run_time=0.5)
         self.wait(0.2)
 
         # "1 *" в рамку
@@ -113,9 +129,8 @@ class MotivationMem(MovingCameraScene):
 
         # Умножить на ОТ
 
-    
-
-        
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ============================================================================
 
 
 
