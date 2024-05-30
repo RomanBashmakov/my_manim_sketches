@@ -60,7 +60,7 @@ class MotivationMem(MovingCameraScene):
 
         # 365 в рамку
         # self.add(index_labels(math_mem_0[0]))
-        surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][0:12], color = YELLOW, buff = 0.15)
+        surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][0:12], color = YELLOW, buff = 0.15, corner_radius=0.2)
         self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
         self.wait(0.2)
 
@@ -76,7 +76,7 @@ class MotivationMem(MovingCameraScene):
 
         # 365 в рамку
         math_mem_0[0][4:7].set_color(YELLOW)
-        surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][4:7], color = YELLOW, buff = 0.1)
+        surraundingRectangle = SurroundingRectangle(mobject = math_mem_0[0][4:7], color = YELLOW, buff = 0.1, corner_radius=0.2)
         self.play(ShowCreationThenFadeOut(surraundingRectangle), run_time = 1)
         self.wait(0.2)
 
@@ -92,50 +92,54 @@ class MotivationMem(MovingCameraScene):
 
         self.play(FadeOut(a_365, text_365))
         self.wait(0.2)
+        # ============================================= 1
+        
+        # ======================= 1
+        
 
-        # добавить единицу
-        math_mem_3 = MathTex(
-            r" 1 \times 0.99^{365}&\approx0.03 \\",
-            r" 1.01^{365} &\approx 38",
-            font_size = 200
-        )
-        math_mem_3[0][0:2].set_color(YELLOW)
-        math_mem_3[0].move_to(math_mem_0[0])
+        # # добавить единицу
+        # math_mem_3 = MathTex(
+        #     r" 1 \times 0.99^{365}&\approx0.03 \\",
+        #     r" 1.01^{365} &\approx 38",
+        #     font_size = 200
+        # )
+        # math_mem_3[0][0:2].set_color(YELLOW)
+        # math_mem_3[0].move_to(math_mem_0[0])
 
-        self.play(ReplacementTransform(math_mem_0[0], math_mem_3[0]))
+        # self.play(ReplacementTransform(math_mem_0[0], math_mem_3[0]))
 
-        # self.play(ReplacementTransform(math_mem_0_0, math_mem_3))
-        # self.wait(0.2)
-
-        # # arrows = [Arrow(2 * DR, 2 * UL), Arrow(2 * DR, 2 * UL)]
-        # # VGroup(*arrows).set_x(0).arrange(buff=2)
-        # # self.play(GrowArrow(arrows[0]))
+        # # self.play(ReplacementTransform(math_mem_0_0, math_mem_3))
         # # self.wait(0.2)
 
-        # Ты сегодня
-        text_you = Text("Ты сегодня", font_size = 200, font = "Bradley Hand").move_to(UP * 2)
-        self.play(Create(text_you), run_time=0.5)
-        self.wait(0.2)
+        # # # arrows = [Arrow(2 * DR, 2 * UL), Arrow(2 * DR, 2 * UL)]
+        # # # VGroup(*arrows).set_x(0).arrange(buff=2)
+        # # # self.play(GrowArrow(arrows[0]))
+        # # # self.wait(0.2)
 
-        # Стрелка
-        a_1 = Arrow(text_you.get_center() + UL * 1, math_mem_3[0][0:2].get_center() + DR * 1)
-        self.play(Create(a_1), run_time=0.5)
-        self.wait(0.2)
+        # # Ты сегодня
+        # text_you = Text("Ты сегодня", font_size = 200, font = "Bradley Hand").move_to(UP * 2)
+        # self.play(Create(text_you), run_time=0.5)
+        # self.wait(0.2)
 
-        # "1 *" в рамку
-        framebox_1 = SurroundingRectangle(mobject = math_mem_3[0][0:2], color = YELLOW, buff = 0.15)
-        self.play(ShowCreationThenFadeOut(framebox_1), run_time = 2)
-        self.wait(0.2)
+        # # Стрелка
+        # a_1 = Arrow(text_you.get_center() + UL * 1, math_mem_3[0][0:2].get_center() + DR * 1)
+        # self.play(Create(a_1), run_time=0.5)
+        # self.wait(0.2)
 
-        self.play(FadeOut(a_1, text_you))
+        # # "1 *" в рамку
+        # framebox_1 = SurroundingRectangle(mobject = math_mem_3[0][0:2], color = YELLOW, buff = 0.15, corner_radius=0.2)
+        # self.play(ShowCreationThenFadeOut(framebox_1), run_time = 2)
+        # self.wait(0.2)
 
-        g = VGroup().scale(0.5).arrange(direction = RIGHT).next_to(math_mem_3,UP * 5).arrange(direction = RIGHT)
-        for i in range(1, 3):
-            g += MathTex(
-                r" \times 0.99",
-                font_size = 100
-            )
-        self.wait(0.2)
+        # self.play(FadeOut(a_1, text_you))
+
+        # g = VGroup().scale(0.5).arrange(direction = RIGHT).next_to(math_mem_3,UP * 5).arrange(direction = RIGHT)
+        # for i in range(1, 3):
+        #     g += MathTex(
+        #         r" \times 0.99",
+        #         font_size = 100
+        #     )
+        # self.wait(0.2)
 
         # Умножить на ОТ
 
