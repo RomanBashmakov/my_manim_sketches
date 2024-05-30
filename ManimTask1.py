@@ -155,9 +155,11 @@ class My_test(MovingCameraScene):
         g = VGroup().scale(0.5)
         for i in range(0, g_max - 2):
             if i == 0:
-                g.add( MathTex(r"0.99",font_size = 200))
+                g.add(MathTex(r"0.99^{365} = ",font_size = 200))
+            elif i == 1:
+                g.add(MathTex(r"0.99",font_size = 200))
             else:
-                g.add( MathTex(r" \times 0.99",font_size = 200))
+                g.add(MathTex(r" \times 0.99",font_size = 200))
                 
             g_counter += 1
             # if i == 0:
@@ -176,30 +178,25 @@ class My_test(MovingCameraScene):
 
         # Вывод
         for i in range(0, g_max - 2):
-            self.play(self.camera.frame.animate.move_to(g[i]).set(width=g[1].width*1.5))
+            self.play(self.camera.frame.animate.move_to(g[i]).set(width=g[1].width * 3.5))
             self.play(Create(g[i]))
 
-            self.add(Integer(number = i + 1).set_color(ORANGE).scale(2.5).next_to(g[i], UP*2))
-            self.wait(0.1)
+            if i != 0:
+                self.add(Integer(number = i).set_color(ORANGE).scale(2.5).next_to(g[i], UP * 2))
+                self.wait(0.1)
+                print(g_counter)
 
             g_counter -= 1
 
-            # if i != 0:
-            #     self.add(Integer(number = i).set_color(ORANGE).scale(2.5).next_to(g[i], UP*2))
-            #     self.wait(0.1)
-
-            #     g_counter -= 1
-            #     print(g_counter)
-
-        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width*1.5))
+        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width * 3.5))
         self.play(Create(g[g_max - g_counter]))
         self.wait(0.1)
 
         g_counter -= 1
 
-        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width*1.5))
+        self.play(self.camera.frame.animate.move_to(g[g_max - g_counter]).set(width=g[1].width * 3.5))
         self.play(Create(g[g_max - g_counter]))
-        self.add(Integer(365).set_color(ORANGE).scale(2.5).next_to(g[g_max - g_counter], UP*2))
+        self.add(Integer(365).set_color(ORANGE).scale(2.5).next_to(g[g_max - g_counter], UP * 2))
         self.wait(0.1)
 
         g_counter -= 1
