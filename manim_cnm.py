@@ -5,20 +5,48 @@ from manim import *
 
 shutil.rmtree(os.path.join('media'))
 os.mkdir('media')
+# у нас есть четыре фрукта, и мы хотим их съесть поочереди. Сколько существует возможных вариантов такой трапезы?
+# Если мы будем слепо перебирать варианты, то, во-первых, мы будем сталкиваться с повторами, во-вторых, рискуем случайно пропустить какие-то конкретные варианты.
+# Вместо этого давайте воспользуемся логикой.
+# Итак, первым мы можем съесть любой из имеющихся фруктов. Их у нас ровно четыре
+# следующим фруктом может быть любой из оставшихся трех.
+# после этого останется выбрать какой-то из двух оставшихся
+# Ну, и, наконец, остается только один.
+
+# У нас получилось своеобразное дерево с фрукто-овощем, где каждая ветка - это вариант трапезы.
+# Эти ветки можно легко пересчитать вручную, но давайте попробуем логически. 
+# Для этого повторим рассуждения
+# Всего у нас четыре ветки.
+# На каждой ветке по три ответвления.
+# на каждом ответвлении по два отростка.
+# На каждом ответвлении по одному фрукту-овощу.
+
+# Для такого последовательного перемножения придумали компактную запись
+# Такая запись может быть очень удобна, если элементов не четыре, а например 10, 100, 1000 и тд
+# В следующий раз попробуем разобраться с тем, сколько вариантов трапезы у нас есть, если фрукто-овощей больше, чем мы хотим съесть за раз.
+ 
 
 
 def make_mobs (mob_type) -> list:
     mobs = list()
     for x in np.nditer(mob_type):
-        if x == 1: 
+        if x == 0: 
             mobs.append(SVGMobject("cucumber.svg"))
-        else:
+        elif x == 1:
+            mobs.append(SVGMobject("plum.svg"))
+        elif x == 2:
+            mobs.append(SVGMobject("lemo.svg"))
+        elif x == 3:
             mobs.append(SVGMobject("apple_red.svg"))
     return mobs 
 
-def moveAlongPath(mobject_1, mobject_2, movingCameraScene):
+def moveAlongPath(mobject_1, mobject_2, movingCameraScene, f_up_down) -> Dot:
+    dot = Dot().move_to(mobject_1)
     path = Line(mobject_1.get_center(), mobject_2.get_center(),stroke_opacity=0.5).set_opacity(0)
-    path.points[1:3] += UP*2
+    if f_up_down:
+        path.points[1:3] += UP*2
+    else:
+        path.points[1:3] -= UP*2
 
     mobject_1.save_state()
     def update_rotate_move(mob,alpha):
@@ -26,13 +54,41 @@ def moveAlongPath(mobject_1, mobject_2, movingCameraScene):
         mobject_1.move_to(path.point_from_proportion(alpha))
         mobject_1.rotate(2*PI*alpha)
 
-    movingCameraScene.add(mobject_2,mobject_1,path)
     movingCameraScene.play(
             UpdateFromAlphaFunc(mobject_1,update_rotate_move),
-            run_time=4
+            run_time = 1
         )
-    
-    movingCameraScene.wait()
+    return dot
+
+def swapMobs(mobject_1, mobject_2, movingCameraScene):
+
+    mobject_1.save_state()
+    mobject_2.save_state()
+
+    dot_1 = Dot().move_to(mobject_1)
+    dot_2 = Dot().move_to(mobject_2)
+
+    def update_rotate_move_up(mob,alpha):
+        mob.restore()
+        path = Line(dot_1.get_center(), dot_2.get_center(),stroke_opacity=0.5).set_opacity(0)
+        path.points[1:3] += UP*2
+        mob.move_to(path.point_from_proportion(alpha))
+        mob.rotate(2*PI*alpha)
+
+    def update_rotate_move_down(mob,alpha):
+        mob.restore()
+        path = Line(dot_2.get_center(), dot_1.get_center(),stroke_opacity=0.5).set_opacity(0)
+        path.points[1:3] -= UP*2
+        mob.move_to(path.point_from_proportion(alpha))
+        mob.rotate(2*PI*alpha)
+
+    movingCameraScene.play(
+            AnimationGroup(
+                UpdateFromAlphaFunc(mobject_1, update_rotate_move_up),
+                UpdateFromAlphaFunc(mobject_2, update_rotate_move_down),
+                run_time = 1
+            )
+        )
 
 def placeInLine (mobs, rows, cols, x_step, y_step):
     for i, mob in enumerate(mobs):
@@ -40,26 +96,67 @@ def placeInLine (mobs, rows, cols, x_step, y_step):
         col = i % cols
         mob.move_to(np.array([col * x_step - (cols-1) * x_step / 2, 
                                 -(row * y_step) + (rows-1) * y_step / 2, 0]))
+        
+def playReplaceMobs (movingCameraScene, mobs_1, mobs_2):
+    for i, mob_1 in enumerate(mobs_1):
+        movingCameraScene.play(Transform(mobs_1[i], mobs_2[i]))
 
+def placeGrid(movingCameraScene):
+    # Создаем сетку с настройками
+    grid = NumberPlane(
+        x_range=[-100, 100, 1],   # Диапазон по оси X: от -10 до 10 с шагом 1
+        y_range=[-100, 100, 1],   # Диапазон по оси Y: от -10 до 10 с шагом 1
+        background_line_style = {
+            "stroke_color": BLUE,     # Цвет линий сетки
+            "stroke_width": 1,        # Толщина линий сетки
+            "stroke_opacity": 0.6     # Прозрачность линий сетки
+        }
+    )
+    # Настроить оси
+    grid.axes.set_color(BLUE).set(stroke_width = 0.5, stroke_opacity = 0.6)  # Цвет осей
+
+    # Добавляем сетку на сцену
+    movingCameraScene.add(grid)
+    grid.remove(grid.x_axis, grid.y_axis)
+
+def showEverithing(group, movingCameraScene):
+    # Определение масштаба камеры по ширине и высоте
+    scale_width = movingCameraScene.camera.frame_width / group.width
+    scale_height = movingCameraScene.camera.frame_height / group.height
+
+    # Выбор наименьшего масштаба для гарантии, что все объекты попадут в кадр
+    optimal_scale = min(scale_width, scale_height)
+
+    # Установка ширины и высоты кадра камеры
+    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 1.1))
+    movingCameraScene.play(movingCameraScene.camera.frame.animate.move_to(group))
+    
+
+#============================================================================================================
+#############################################################################################################
+#############################################################################################################
+#============================================================================================================
 class Permutations(MovingCameraScene):
     def construct(self):
-        self.camera.background_color = GRAY
+        self.camera.background_color = GREY_BROWN
+
+        placeGrid(self)
 
         # Создаем несколько объектов
-        mob_type = np.array([1, 1, 0, 0, 0])
+        mob_type = np.array([0, 1, 2, 3])
         mobs = make_mobs(mob_type)
         mobs_2 = make_mobs(mob_type)
 
         # Располагаем mobs по сетке вертикально
-        placeInLine(mobs, 5, 1, 1.1, 2.1)
+        placeInLine(mobs, 5, 1, 0, 2.1)
             
         # Располагаем mobs_2 по сетке горизонтально
-        placeInLine(mobs_2, 1, 5, 1.1, 2.1)
+        placeInLine(mobs_2, 1, 5, 1.3, 0)
 
         # Группируем вертикальные объекты
         grid = VGroup(*mobs).scale(0.5)
         # Группируем горизонтальные объекты
-        grid_2 = VGroup(*mobs_2).next_to(grid.get_top(), UP)
+        grid_2 = VGroup(*mobs_2).next_to(grid.get_top(), UP).scale(0.5)
 
         # Анимация появления объектов
         self.play(self.camera.frame.animate.move_to(grid).set(height = grid.height * 1.1))
@@ -67,24 +164,63 @@ class Permutations(MovingCameraScene):
         
         group = VGroup(grid, grid_2)
 
-        # Определение масштаба камеры по ширине и высоте
-        scale_width = self.camera.frame_width / group.width
-        scale_height = self.camera.frame_height / group.height
+        showEverithing(group, self)
 
-        # Выбор наименьшего масштаба для гарантии, что все объекты попадут в кадр
-        optimal_scale = max(scale_width, scale_height)
-
-        # Установка ширины и высоты кадра камеры
-        self.play(self.camera.frame.animate.set(width = group.width * optimal_scale * 1.4))
-        self.play(self.camera.frame.animate.move_to(group))
-
-        for i, mob_1 in enumerate(mobs):
-            self.play(Transform(mobs[i], mobs_2[i]))
-
-        new_position = (self.camera.frame.get_top() - grid_2.get_top()) * UP
+        # Заменить горизонтальные на вертикальные
+        playReplaceMobs(self, mobs, mobs_2)
 
         self.remove(grid)
-        self.play(grid_2.animate.move_to(new_position))
+        self.play(grid_2.animate.move_to(self.camera.frame.get_top()))
 
-        # moveAlongPath(grid_2[0], grid_2[4], self)
-        self.wait(0.2)
+        self.play(self.camera.frame.animate.move_to(grid_2))
+
+        swapMobs(grid_2[0], grid_2[3], self)
+        # swapMobs(grid_2[1], grid_2[2], self)
+        # swapMobs(grid_2[0], grid_2[1], self)
+        # swapMobs(grid_2[2], grid_2[3], self)
+        # swapMobs(grid_2[1], grid_2[2], self)
+        # swapMobs(grid_2[0], grid_2[1], self)
+        # swapMobs(grid_2[2], grid_2[3], self)
+
+        self.wait(2)
+#============================================================================================================
+#############################################################################################################
+#############################################################################################################
+#============================================================================================================
+class Permutations_2(MovingCameraScene):
+    def construct(self):
+        self.camera.background_color = GREY_BROWN
+
+        placeGrid(self)
+
+        # Создаем несколько объектов
+        list_of_grids = list() #список grids'ов 
+
+        mob_type = np.array([0, 1, 2, 3])
+        mobs_1 = make_mobs(mob_type)
+        mobs_2 = make_mobs(mob_type)
+
+        # Исходные фрукты-овощи вертикально
+        placeInLine(mobs_1, 5, 1, 0, 2)
+        grid_1 = VGroup(*mobs_1).scale(0.5)
+        list_of_grids.append(grid_1)
+        group = VGroup(*list_of_grids)
+        
+        # Стартовый экран
+        self.play(self.camera.frame.animate.move_to(grid_1).set(height = grid_1.height * 1.1))
+        self.play(Create(grid_1))
+
+        # Первый слой
+        placeInLine(mobs_2, 5, 1, 0, 5)
+        grid_2 = VGroup(*mobs_2).scale(0.5).next_to(grid_1, RIGHT * 5)
+        list_of_grids.append(grid_2)
+        
+        group = VGroup(grid_1, grid_2)
+
+        # объединить все объекты, чтобы перевести на них камеру
+        showEverithing(group, self)
+
+        # Отобразить первый слой
+        self.play(Create(grid_2))
+        
+        self.wait(2)
