@@ -128,7 +128,7 @@ def showEverithing(group, movingCameraScene):
     optimal_scale = min(scale_width, scale_height)
 
     # Установка ширины и высоты кадра камеры
-    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 1.1))
+    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 2))
     movingCameraScene.play(movingCameraScene.camera.frame.animate.move_to(group))
     
 
@@ -201,26 +201,99 @@ class Permutations_2(MovingCameraScene):
         mobs_2 = make_mobs(mob_type)
 
         # Исходные фрукты-овощи вертикально
-        placeInLine(mobs_1, 5, 1, 0, 2)
+        placeInLine(mobs_1, 4, 1, 0, 1.5)
         grid_1 = VGroup(*mobs_1).scale(0.5)
         list_of_grids.append(grid_1)
-        group = VGroup(*list_of_grids)
         
         # Стартовый экран
         self.play(self.camera.frame.animate.move_to(grid_1).set(height = grid_1.height * 1.1))
         self.play(Create(grid_1))
 
         # Первый слой
-        placeInLine(mobs_2, 5, 1, 0, 5)
-        grid_2 = VGroup(*mobs_2).scale(0.5).next_to(grid_1, RIGHT * 5)
+        placeInLine(mobs_2, 4, 1, 0, 8)
+        grid_2 = VGroup(*mobs_2).scale(1).next_to(grid_1, RIGHT * 5)
         list_of_grids.append(grid_2)
-        
-        group = VGroup(grid_1, grid_2)
 
-        # объединить все объекты, чтобы перевести на них камеру
-        showEverithing(group, self)
+        showEverithing(VGroup(*list_of_grids), self)
 
-        # Отобразить первый слой
         self.play(Create(grid_2))
-        
-        self.wait(2)
+        self.wait(0.3)
+
+        mobs_3 = []
+        for i in range(0,4):
+            mobs_i = make_mobs(mob_type)
+            inner_mob_list = []
+            for n in range(0,4):
+                if n != i:
+                    inner_mob_list.append(mobs_i[n])
+            mobs_3.append(inner_mob_list)
+
+            placeInLine(mobs_3[i], 4, 1, 0, 3)
+            list_of_grids.append(VGroup(*mobs_3[i]).scale(0.75).next_to(mobs_2[i]))
+
+        showEverithing(VGroup(*list_of_grids), self)
+
+        for i in range(0,4):
+            c = 0
+            for n in range(0,4):
+                if n != i:
+                    self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]))
+                    c += 1
+        self.wait(0.3)
+
+
+
+        # mob_type = np.array([1, 2, 3])
+        # mobs_3_1 = make_mobs(mob_type)
+
+        # mob_type = np.array([0, 2, 3])
+        # mobs_3_2 = make_mobs(mob_type)
+
+        # mob_type = np.array([0, 1, 3])
+        # mobs_3_3 = make_mobs(mob_type)
+
+        # mob_type = np.array([0, 1, 2])
+        # mobs_3_4 = make_mobs(mob_type)
+
+
+        # placeInLine(mobs_3_1, 3, 1, 0, 3)
+        # grid_3_1 = VGroup(*mobs_3_1).scale(0.75).next_to(mobs_2[0])
+        # list_of_grids.append(grid_3_1)
+
+        # placeInLine(mobs_3_2, 3, 1, 0, 3)
+        # grid_3_2 = VGroup(*mobs_3_2).scale(0.75).next_to(mobs_2[1])
+        # list_of_grids.append(grid_3_2)
+
+        # placeInLine(mobs_3_3, 3, 1, 0, 3)
+        # grid_3_3 = VGroup(*mobs_3_3).scale(0.75).next_to(mobs_2[2])
+        # list_of_grids.append(grid_3_3)
+
+        # placeInLine(mobs_3_4, 3, 1, 0, 3)
+        # grid_3_4 = VGroup(*mobs_3_4).scale(0.75).next_to(mobs_2[3])
+        # list_of_grids.append(grid_3_4)
+
+        # showEverithing(VGroup(*list_of_grids), self)
+
+        # Расставить первый слой
+        # self.play(
+        #     AnimationGroup(
+        #         TransformFromCopy(mobs_1[0], mobs_2[0]),
+        #         TransformFromCopy(mobs_1[1], mobs_2[1]),
+        #         TransformFromCopy(mobs_1[2], mobs_2[2]),
+        #         TransformFromCopy(mobs_1[3], mobs_2[3]),
+        #         run_time = 1
+        #     )
+        # )
+        # self.play(Create(grid_3_1))
+        # self.play(Create(grid_3_2))
+        # self.play(Create(grid_3_3))
+        # self.play(Create(grid_3_4))
+
+        # mob_type = np.array([2, 3])
+        # mobs_4_1_1 = make_mobs(mob_type)
+
+        # mob_type = np.array([1, 3])
+        # mobs_4_1_2 = make_mobs(mob_type)
+
+        # mob_type = np.array([1, 2])
+        # mobs_4_1_3 = make_mobs(mob_type)
