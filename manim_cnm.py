@@ -2,6 +2,7 @@
 import os
 import shutil
 from manim import *
+import copy
 
 shutil.rmtree(os.path.join('media'))
 os.mkdir('media')
@@ -539,11 +540,61 @@ class Permutations_3(MovingCameraScene):
                     mobs_to_show.append(mob_list_1_lvl_4[0][i][n][p])
 
         focus_group = VGroup(*mobs_to_show)
-        self.play(self.camera.frame.animate.move_to(focus_group).set(width = focus_group.width * 1.1))
+        self.play(self.camera.frame.animate.move_to(focus_group).set(width = focus_group.width * 5))
+        # self.wait(0.3)
+
+        # Выделить фрукты на одной ветке
+        framebox_1 = SurroundingRectangle(mobs_2[0], buff = .05, corner_radius=0.2)
+        framebox_2 = SurroundingRectangle(mobs_3[0][0], buff = .05, corner_radius=0.2)
+        framebox_3 = SurroundingRectangle(mob_list_1_lvl[0][0][0], buff = .05, corner_radius=0.2)
+        framebox_4 = SurroundingRectangle(mob_list_1_lvl_4[0][0][0][0], buff = .05, corner_radius=0.2)
+
+        self.add(framebox_1,framebox_2,framebox_3,framebox_4)
         self.wait(0.3)
 
-        # mobs_2[0] #первый слой
-        # mobs_3[i][c] #второй слой
-        # mob_list_1_lvl[c][cc][ccc] #третий слой
-        # mob_list_1_lvl_4[0][i][n][p] #четвертый слой
+#============================================================================================================
+# Отдельно каждая ветка
+#============================================================================================================
+        mobs_to_show_by_4_all = []
+        mobs_to_show_by_4 = []
+        mobs_to_show_by_4_lvl_1 = mobs_to_show_by_4.copy()
+        mobs_to_show_by_4_lvl_1.append((mobs_2[0]).copy())
+
+        for i in range(0, 3):
+            mobs_to_show_by_4 = []
+            mobs_to_show_by_4_lvl_1 = mobs_to_show_by_4.copy()
+            mobs_to_show_by_4_lvl_1.append((mobs_2[0]).copy())
+
+            mobs_to_show_by_4_lvl_2 = []
+            mobs_to_show_by_4_lvl_2 = mobs_to_show_by_4_lvl_1.copy()
+            mobs_to_show_by_4_lvl_2.append(mobs_3[0][i].copy())
+            # self.wait(0.3)
+
+            for n in range(0, 2):
+                mobs_to_show_by_4_lvl_3 = []
+                mobs_to_show_by_4_lvl_3 = mobs_to_show_by_4_lvl_2.copy()
+                mobs_to_show_by_4_lvl_3.append(mob_list_1_lvl[0][i][n].copy())
+                # self.wait(0.3)
+
+                for p in range(0, 1):
+                    mobs_to_show_by_4_lvl_4 = []
+                    mobs_to_show_by_4_lvl_4 = mobs_to_show_by_4_lvl_3.copy()
+                    mobs_to_show_by_4_lvl_4.append(mob_list_1_lvl_4[0][i][n][p].copy())
+
+                    # placeInLine(mobs_to_show_by_4_lvl_4, 1, 4, 3, 0)
+                    group_mobs_to_show_by_4 = VGroup(*(mobs_to_show_by_4_lvl_4))#.scale(0.5)
+                    group_mobs_to_show_by_4.next_to(mob_list_1_lvl_4[0][i][n][p])
+                    self.add(group_mobs_to_show_by_4)
+                    self.wait(0.3)
+
+                    # mobs_to_show_by_4_all.append(group_mobs_to_show_by_4)
+        self.wait(0.3)
+
+
+
+                        
+
+        
+
+
 
