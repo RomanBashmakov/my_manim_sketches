@@ -128,7 +128,7 @@ def showEverithing(group, movingCameraScene):
     optimal_scale = min(scale_width, scale_height)
 
     # Установка ширины и высоты кадра камеры
-    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 2))
+    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 1.1))
     movingCameraScene.play(movingCameraScene.camera.frame.animate.move_to(group))
     
 
@@ -216,9 +216,22 @@ class Permutations_2(MovingCameraScene):
 
         showEverithing(VGroup(*list_of_grids), self)
 
-        self.play(Create(grid_2))
+        # Расставить первый слой
+        self.play(
+            AnimationGroup(
+                TransformFromCopy(mobs_1[0], mobs_2[0]),
+                TransformFromCopy(mobs_1[1], mobs_2[1]),
+                TransformFromCopy(mobs_1[2], mobs_2[2]),
+                TransformFromCopy(mobs_1[3], mobs_2[3]),
+                run_time = 1
+            )
+        )
+
         self.wait(0.3)
 
+#============================================================================================================
+# Второй слой
+#============================================================================================================
         mobs_3 = []
         for i in range(0,4):
             mobs_i = make_mobs(mob_type)
@@ -237,63 +250,300 @@ class Permutations_2(MovingCameraScene):
             c = 0
             for n in range(0,4):
                 if n != i:
-                    self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]))
+                    self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]), run_time = 0.5)
+                    path = Line(mobs_2[i].get_center(), mobs_3[i][c].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                    self.play(Create(path), run_time = 0.1)
                     c += 1
         self.wait(0.3)
 
+#============================================================================================================
+# Третий слой
+#============================================================================================================
+        mobs_4 = [[[]]]
+        
+        mob_list_1_lvl = [] #Кол-во первых уровней = 4
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            mob_list_2_lvl = [] #Кол-во вторых уровней = 3
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    mob_list_3_lvl = [] #Кол-во третьих уровней = 2
+                    for k in range(0,4): # Перебрать каждый элемент третьего уровня
+                        mobs_i = make_mobs(mob_type) #набор-донор
+                        if (k != i) and (k != n):
+                            mob_list_3_lvl.append(mobs_i[k])
+                            ccc += 1
+                    placeInLine(mob_list_3_lvl, 3, 1, 0, 2)
+                    this_group = VGroup(*mob_list_3_lvl).scale(0.5)
+                    this_group.next_to(mobs_3[i][cc])
+
+                    mob_list_2_lvl.append(mob_list_3_lvl)
+                    cc += 1
+            mob_list_1_lvl.append(mob_list_2_lvl)
+            c += 1
+
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    for k in range(0,4): # Перебрать каждый элемент третьего уровня
+                        if (k != i) and (k != n):
+                            path = Line(mob_list_1_lvl[c][cc][ccc].get_center(), mobs_3[i][cc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                            self.add(path)
+                            self.play(TransformFromCopy(mobs_i[k], mob_list_1_lvl[c][cc][ccc]), run_time = 0.3)
+                            ccc += 1
+                    cc += 1
+            c += 1
+
+#============================================================================================================
+# Четвертый слой
+#============================================================================================================
+        mob_list_1_lvl_4 = [] #Кол-во первых уровней = 4
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            mob_list_2_lvl_4 = [] #Кол-во вторых уровней = 3
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    mob_list_3_lvl_4 = [] #Кол-во третьих уровней = 2
+                    for k in range(0,4): # заполнить элементы третьего слоя
+                        if (k != i) and (k != n):
+                            cccc = 0
+                            mob_list_4_lvl_4 = [] #Кол-во третьих уровней = 2
+                            for p in range(0, 4):
+                                mobs_i = make_mobs(mob_type) #набор-донор
+                                if (p != i) and (p != n) and (p != k):
+                                    mob_list_4_lvl_4.append(mobs_i[p])
+                                    cccc += 1
+                            placeInLine(mob_list_4_lvl_4, 2, 1, 0, 2)
+                            this_group = VGroup(*mob_list_4_lvl_4).scale(0.5)
+                            this_group.next_to(mob_list_1_lvl[c][cc][ccc])
+                            mob_list_3_lvl_4.append(mob_list_4_lvl_4)
+                            # self.add(this_group)
+                            # self.wait(0.1)
+                            ccc += 1
+                    mob_list_2_lvl_4.append(mob_list_3_lvl_4)
+                    cc += 1
+            mob_list_1_lvl_4.append(mob_list_2_lvl_4)
+            c += 1
+
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    for k in range(0,4): # заполнить элементы третьего слоя
+                        if (k != i) and (k != n):
+                            cccc = 0
+                            for p in range(0, 4):
+                                if (p != i) and (p != n) and (p != k):
+                                    path = Line(mob_list_1_lvl_4[c][cc][ccc][cccc].get_center(), mob_list_1_lvl[c][cc][ccc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                                    self.add(path)
+                                    self.play(TransformFromCopy(mobs_1[p], mob_list_1_lvl_4[c][cc][ccc][cccc]), run_time = 0.3)
+                                    self.wait(0.1)
+                                    cccc += 1
+                            ccc += 1
+                    cc += 1
+            c += 1
 
 
-        # mob_type = np.array([1, 2, 3])
-        # mobs_3_1 = make_mobs(mob_type)
+#============================================================================================================
+#############################################################################################################
+#############################################################################################################
+#============================================================================================================
+class Permutations_3(MovingCameraScene):
+    def construct(self):
+        self.camera.background_color = GREY_BROWN
 
-        # mob_type = np.array([0, 2, 3])
-        # mobs_3_2 = make_mobs(mob_type)
+        placeGrid(self)
 
-        # mob_type = np.array([0, 1, 3])
-        # mobs_3_3 = make_mobs(mob_type)
+        # Создаем несколько объектов
+        list_of_grids = list() #список grids'ов 
 
-        # mob_type = np.array([0, 1, 2])
-        # mobs_3_4 = make_mobs(mob_type)
+        mob_type = np.array([0, 1, 2, 3])
+        mobs_1 = make_mobs(mob_type)
+        mobs_2 = make_mobs(mob_type)
 
+        # Исходные фрукты-овощи вертикально
+        placeInLine(mobs_1, 4, 1, 0, 1.5)
+        grid_1 = VGroup(*mobs_1).scale(0.5)
+        list_of_grids.append(grid_1)
+        
+        # Стартовый экран
+        self.play(self.camera.frame.animate.move_to(grid_1).set(height = grid_1.height * 1.1))
+        # self.play(Create(grid_1))
+        self.add(grid_1)
 
-        # placeInLine(mobs_3_1, 3, 1, 0, 3)
-        # grid_3_1 = VGroup(*mobs_3_1).scale(0.75).next_to(mobs_2[0])
-        # list_of_grids.append(grid_3_1)
+        # Первый слой
+        placeInLine(mobs_2, 4, 1, 0, 8)
+        grid_2 = VGroup(*mobs_2).scale(1).next_to(grid_1, RIGHT * 5)
+        list_of_grids.append(grid_2)
 
-        # placeInLine(mobs_3_2, 3, 1, 0, 3)
-        # grid_3_2 = VGroup(*mobs_3_2).scale(0.75).next_to(mobs_2[1])
-        # list_of_grids.append(grid_3_2)
-
-        # placeInLine(mobs_3_3, 3, 1, 0, 3)
-        # grid_3_3 = VGroup(*mobs_3_3).scale(0.75).next_to(mobs_2[2])
-        # list_of_grids.append(grid_3_3)
-
-        # placeInLine(mobs_3_4, 3, 1, 0, 3)
-        # grid_3_4 = VGroup(*mobs_3_4).scale(0.75).next_to(mobs_2[3])
-        # list_of_grids.append(grid_3_4)
-
-        # showEverithing(VGroup(*list_of_grids), self)
+        showEverithing(VGroup(*list_of_grids), self)
 
         # Расставить первый слой
-        # self.play(
-        #     AnimationGroup(
-        #         TransformFromCopy(mobs_1[0], mobs_2[0]),
-        #         TransformFromCopy(mobs_1[1], mobs_2[1]),
-        #         TransformFromCopy(mobs_1[2], mobs_2[2]),
-        #         TransformFromCopy(mobs_1[3], mobs_2[3]),
-        #         run_time = 1
-        #     )
-        # )
-        # self.play(Create(grid_3_1))
-        # self.play(Create(grid_3_2))
-        # self.play(Create(grid_3_3))
-        # self.play(Create(grid_3_4))
+        self.play(
+            AnimationGroup(
+                TransformFromCopy(mobs_1[0], mobs_2[0]),
+                TransformFromCopy(mobs_1[1], mobs_2[1]),
+                TransformFromCopy(mobs_1[2], mobs_2[2]),
+                TransformFromCopy(mobs_1[3], mobs_2[3]),
+                run_time = 1
+            )
+        )
 
-        # mob_type = np.array([2, 3])
-        # mobs_4_1_1 = make_mobs(mob_type)
+        self.wait(0.3)
 
-        # mob_type = np.array([1, 3])
-        # mobs_4_1_2 = make_mobs(mob_type)
+#============================================================================================================
+# Второй слой
+#============================================================================================================
+        mobs_3 = []
+        for i in range(0,4):
+            mobs_i = make_mobs(mob_type)
+            inner_mob_list = []
+            for n in range(0,4):
+                if n != i:
+                    inner_mob_list.append(mobs_i[n])
+            mobs_3.append(inner_mob_list)
 
-        # mob_type = np.array([1, 2])
-        # mobs_4_1_3 = make_mobs(mob_type)
+            placeInLine(mobs_3[i], 4, 1, 0, 3)
+            list_of_grids.append(VGroup(*mobs_3[i]).scale(0.75).next_to(mobs_2[i]))
+
+        showEverithing(VGroup(*list_of_grids), self)
+
+        for i in range(0,4):
+            c = 0
+            for n in range(0,4):
+                if n != i:
+                    # self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]), run_time = 0.5)
+                    self.add(mobs_3[i][c])
+                    path = Line(mobs_2[i].get_center(), mobs_3[i][c].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                    # self.play(Create(path), run_time = 0.1)
+                    self.add(path)
+                    c += 1
+        self.wait(0.3)
+
+#============================================================================================================
+# Третий слой
+#============================================================================================================
+        mobs_4 = [[[]]]
+        
+        mob_list_1_lvl = [] #Кол-во первых уровней = 4
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            mob_list_2_lvl = [] #Кол-во вторых уровней = 3
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    mob_list_3_lvl = [] #Кол-во третьих уровней = 2
+                    for k in range(0,4): # Перебрать каждый элемент третьего уровня
+                        mobs_i = make_mobs(mob_type) #набор-донор
+                        if (k != i) and (k != n):
+                            mob_list_3_lvl.append(mobs_i[k])
+                            ccc += 1
+                    placeInLine(mob_list_3_lvl, 3, 1, 0, 2)
+                    this_group = VGroup(*mob_list_3_lvl).scale(0.5)
+                    this_group.next_to(mobs_3[i][cc])
+
+                    mob_list_2_lvl.append(mob_list_3_lvl)
+                    cc += 1
+            mob_list_1_lvl.append(mob_list_2_lvl)
+            c += 1
+
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    for k in range(0,4): # Перебрать каждый элемент третьего уровня
+                        if (k != i) and (k != n):
+                            path = Line(mob_list_1_lvl[c][cc][ccc].get_center(), mobs_3[i][cc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                            # self.add(path)
+                            self.add(path)
+                            # self.play(TransformFromCopy(mobs_i[k], mob_list_1_lvl[c][cc][ccc]), run_time = 0.3)
+                            self.add(mob_list_1_lvl[c][cc][ccc])
+                            ccc += 1
+                    cc += 1
+            c += 1
+
+#============================================================================================================
+# Четвертый слой
+#============================================================================================================
+        mob_list_1_lvl_4 = [] #Кол-во первых уровней = 4
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            mob_list_2_lvl_4 = [] #Кол-во вторых уровней = 3
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    mob_list_3_lvl_4 = [] #Кол-во третьих уровней = 2
+                    for k in range(0,4): # заполнить элементы третьего слоя
+                        if (k != i) and (k != n):
+                            cccc = 0
+                            mob_list_4_lvl_4 = [] #Кол-во третьих уровней = 2
+                            for p in range(0, 4):
+                                mobs_i = make_mobs(mob_type) #набор-донор
+                                if (p != i) and (p != n) and (p != k):
+                                    mob_list_4_lvl_4.append(mobs_i[p])
+                                    cccc += 1
+                            placeInLine(mob_list_4_lvl_4, 2, 1, 0, 2)
+                            this_group = VGroup(*mob_list_4_lvl_4).scale(0.5)
+                            this_group.next_to(mob_list_1_lvl[c][cc][ccc])
+                            mob_list_3_lvl_4.append(mob_list_4_lvl_4)
+                            ccc += 1
+                    mob_list_2_lvl_4.append(mob_list_3_lvl_4)
+                    cc += 1
+            mob_list_1_lvl_4.append(mob_list_2_lvl_4)
+            c += 1
+
+        c = 0
+        for i in range(0,4): #заполнить элементы первого слоя
+            cc = 0 # счетчик добавленных элементов во втором слое
+            for n in range(0,4): #заполнить элементы второго слоя
+                if (n != i):
+                    ccc = 0 # счетчик добавленных элементов в третьем слое
+                    for k in range(0,4): # заполнить элементы третьего слоя
+                        if (k != i) and (k != n):
+                            cccc = 0
+                            for p in range(0, 4):
+                                if (p != i) and (p != n) and (p != k):
+                                    path = Line(mob_list_1_lvl_4[c][cc][ccc][cccc].get_center(), mob_list_1_lvl[c][cc][ccc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
+                                    self.add(path)
+                                    # self.play(TransformFromCopy(mobs_1[p], mob_list_1_lvl_4[c][cc][ccc][cccc]), run_time = 0.3)
+                                    self.add(mob_list_1_lvl_4[c][cc][ccc][cccc])
+                                    self.wait(0.1)
+                                    cccc += 1
+                            ccc += 1
+                    cc += 1
+            c += 1
+
+#============================================================================================================
+# Фокус на одной ветке
+#============================================================================================================
+        mobs_to_show = []
+        mobs_to_show.append(mobs_2[0])
+        for i in range(0, 3):
+            mobs_to_show.append(mobs_3[0][i])
+            for n in range(0, 2):
+                mobs_to_show.append(mob_list_1_lvl[0][i][n])
+                for p in range(0, 1):
+                    mobs_to_show.append(mob_list_1_lvl_4[0][i][n][p])
+
+        focus_group = VGroup(*mobs_to_show)
+        self.play(self.camera.frame.animate.move_to(focus_group).set(width = focus_group.width * 1.1))
+        self.wait(0.3)
+
+        # mobs_2[0] #первый слой
+        # mobs_3[i][c] #второй слой
+        # mob_list_1_lvl[c][cc][ccc] #третий слой
+        # mob_list_1_lvl_4[0][i][n][p] #четвертый слой
+
