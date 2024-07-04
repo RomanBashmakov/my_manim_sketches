@@ -129,7 +129,7 @@ def showEverithing(group, movingCameraScene):
     optimal_scale = min(scale_width, scale_height)
 
     # Установка ширины и высоты кадра камеры
-    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 1.1))
+    movingCameraScene.play(movingCameraScene.camera.frame.animate.set(width = movingCameraScene.camera.frame_width / optimal_scale * 1.3))
     movingCameraScene.play(movingCameraScene.camera.frame.animate.move_to(group))
     
 
@@ -378,8 +378,8 @@ class Permutations_3(MovingCameraScene):
         
         # Стартовый экран
         self.play(self.camera.frame.animate.move_to(grid_1).set(height = grid_1.height * 1.1))
-        # self.play(Create(grid_1))
-        self.add(grid_1)
+        self.play(Create(grid_1))
+        # self.add(grid_1)
 
         # Первый слой
         placeInLine(mobs_2, 4, 1, 0, 8)
@@ -422,11 +422,11 @@ class Permutations_3(MovingCameraScene):
             c = 0
             for n in range(0,4):
                 if n != i:
-                    # self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]), run_time = 0.5)
-                    self.add(mobs_3[i][c])
+                    self.play(TransformFromCopy(mobs_1[n], mobs_3[i][c]), run_time = 0.5)
+                    # self.add(mobs_3[i][c])
                     path = Line(mobs_2[i].get_center(), mobs_3[i][c].get_center(),stroke_opacity=0.5).set_opacity(0.5)
-                    # self.play(Create(path), run_time = 0.1)
-                    self.add(path)
+                    self.play(Create(path), run_time = 0.1)
+                    # self.add(path)
                     c += 1
         self.wait(0.3)
 
@@ -467,10 +467,9 @@ class Permutations_3(MovingCameraScene):
                     for k in range(0,4): # Перебрать каждый элемент третьего уровня
                         if (k != i) and (k != n):
                             path = Line(mob_list_1_lvl[c][cc][ccc].get_center(), mobs_3[i][cc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
-                            # self.add(path)
                             self.add(path)
-                            # self.play(TransformFromCopy(mobs_i[k], mob_list_1_lvl[c][cc][ccc]), run_time = 0.3)
-                            self.add(mob_list_1_lvl[c][cc][ccc])
+                            self.play(TransformFromCopy(mobs_i[k], mob_list_1_lvl[c][cc][ccc]), run_time = 0.3)
+                            # self.add(mob_list_1_lvl[c][cc][ccc])
                             ccc += 1
                     cc += 1
             c += 1
@@ -519,8 +518,8 @@ class Permutations_3(MovingCameraScene):
                                 if (p != i) and (p != n) and (p != k):
                                     path = Line(mob_list_1_lvl_4[c][cc][ccc][cccc].get_center(), mob_list_1_lvl[c][cc][ccc].get_center(),stroke_opacity=0.5).set_opacity(0.5)
                                     self.add(path)
-                                    # self.play(TransformFromCopy(mobs_1[p], mob_list_1_lvl_4[c][cc][ccc][cccc]), run_time = 0.3)
-                                    self.add(mob_list_1_lvl_4[c][cc][ccc][cccc])
+                                    self.play(TransformFromCopy(mobs_1[p], mob_list_1_lvl_4[c][cc][ccc][cccc]), run_time = 0.3)
+                                    # self.add(mob_list_1_lvl_4[c][cc][ccc][cccc])
                                     self.wait(0.1)
                                     cccc += 1
                             ccc += 1
@@ -586,28 +585,12 @@ class Permutations_3(MovingCameraScene):
         self.play(self.camera.frame.animate.move_to(focus_group).set(width = focus_group.width * 1.1))
         self.wait(1)
 
-
-        # for mob in mobs_to_show_by_4_all:
-        #     self.add(mob)
-        #     self.wait(0.5)
-
-
-        # for mob in mobs_to_show_by_4_all:
-        #     # c = 0
-        #     # self.play(TransformFromCopy(mobs_2[0], mob[c]))
-        #     # c += 1
-
         c = 0
         for i in range(0, 3):
-            # self.play(TransformFromCopy(mobs_3[0][i], mob[c]))
-            # c += 1
 
             for n in range(0, 2):
-                # self.play(TransformFromCopy(mob_list_1_lvl[0][i][n], mob[c]))
-                # c += 1
 
                 for p in range(0, 1):
-                    # self.play(TransformFromCopy(mob_list_1_lvl_4[0][i][n][p], mob[c]))
                     self.play(TransformFromCopy(mobs_2[0], mobs_to_show_by_4_all[c][0]))
                     self.play(TransformFromCopy(mobs_3[0][i], mobs_to_show_by_4_all[c][1]))
                     self.play(TransformFromCopy(mob_list_1_lvl[0][i][n], mobs_to_show_by_4_all[c][2]))
@@ -617,13 +600,82 @@ class Permutations_3(MovingCameraScene):
                         self.wait(0.3)
                     c += 1
 
+#============================================================================================================
+#############################################################################################################
+#############################################################################################################
+#============================================================================================================
+class Permutations_4_Equations(MovingCameraScene):
+    def construct(self):
+        self.camera.background_color = GREY_BROWN
 
+        placeGrid(self)
 
+        text_1 = MarkupText(
+            "Количество вариантов – <span color = 'Yellow' font_family = 'CMU Serif' font_style='italic'>N</span>", font_size= 250, font = 'Marker Felt', color = 'White'
+        )
 
+        self.play(self.camera.frame.animate.move_to(text_1).set(width = text_1.width * 1.5))
 
-                        
+        self.play(Create(text_1))
 
+        self.wait(0.2)
+
+        matex_1 = MathTex(
+            r"N = 5 \times 4 \times 3 \times 2 \times 1",
+            font_size = 400
+        ).next_to(text_1, DOWN * 10)
+        matex_1[0][0].set_color(YELLOW)
+
+        self.play(self.camera.frame.animate.move_to(matex_1).set(width = matex_1.width * 1.5))
+        self.wait(0.2)
+
+        self.play(TransformFromCopy(text_1[21], matex_1[0][0]))
+
+        # self.play(Create(matex_1[0][1]))
+        # self.wait(0.2)
+
+        # self.play(Create(matex_1[0][2:4]))
+        # self.wait(0.2)
+
+        # self.play(Create(matex_1[0][4:6]))
+        # self.wait(0.2)
+
+        # self.play(Create(matex_1[0][6:8]))
+        # self.wait(0.2)
+
+        # self.play(Create(matex_1[0][8:10]))
+        # self.wait(0.2)
+
+        # self.play(Create(matex_1[0][10:12]))
+        # self.wait(0.2)
+
+        self.add(matex_1)
+
+        matex_2 = MathTex(
+            r"N = 5!",
+            font_size = 400
+        )
+
+        # self.play(Create(matex_2))
+
+        self.wait(0.2)
+
+        # Нахождение точек привязки (в данном случае для символа 'a')
+        point_a_formula1 = matex_1[0][1].get_center()
+        point_a_formula2 = matex_2[0][1].get_center()
         
+        # Смещение формулы2 так, чтобы 'a' совпал с 'a' из формулы1
+        shift_vector = point_a_formula1 - point_a_formula2
+        matex_2.shift(shift_vector)
+
+        self.wait(0.2)
+        # self.add(matex_2)
+        self.play(Transform(matex_1[0][2:12],matex_2[0][2:4]))
+        self.wait(0.2)
+
+        self.play(matex_1.animate.shift(RIGHT * 13))
+        self.wait(0.2)
+
 
 
 
